@@ -7,12 +7,12 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { LoginUserDto } from './dto/login-user.dto';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { JwtPayload } from './interfaces';
 import { JwtService } from '@nestjs/jwt';
+import { LoginUserDto } from './dto/login-user.dto';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -59,6 +59,11 @@ export class AuthService {
 
     const { id, ...rest } = user;
 
+    return { ...rest, token: this.getJwtToken({ id: user.id }) };
+  }
+
+  async checkAuthStatus(user: User) {
+    const { id, password, ...rest } = user;
     return { ...rest, token: this.getJwtToken({ id: user.id }) };
   }
 
